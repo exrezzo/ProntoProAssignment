@@ -6,5 +6,3 @@ public class ServiceProvider
     public string Name { get; set; }
     public double AverageRating { get; set; }
 }
-
-public record Rating {}
