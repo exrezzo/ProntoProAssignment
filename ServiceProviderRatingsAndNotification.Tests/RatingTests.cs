@@ -1,5 +1,6 @@
 using FluentAssertions;
 using Moq;
+using ServiceProviderRatingsAndNotification.Rating;
 using ServiceProviderRatingsAndNotification.ServiceProvider;
 
 namespace ServiceProviderRatingsAndNotification.Tests;
@@ -28,5 +29,28 @@ public class RatingTests
         var ratingService = new RatingService(serviceProviderRepoMock.Object);
         var averageRating = await ratingService.GetAverageRatingForServiceProvider(id);
         averageRating.Should().Be(expectedAverage);
+    }
+
+    [Theory]
+    [InlineData(0)]
+    [InlineData(6)]
+    public async Task Adding_Invalid_Rating_Throws(int invalidRating)
+    {
+        var serviceProviderRepoMock = new Mock<IServiceProviderRepository>();
+        var id = Guid.NewGuid();
+        serviceProviderRepoMock
+            .Setup(repository => repository.GetAsync(id))
+            .ReturnsAsync(new ServiceProvider.ServiceProvider()
+            {
+                Id = id,
+                Name = "Cool Service Provider"
+            });
+        var ratingService = new RatingService(serviceProviderRepoMock.Object);
+        var throwingSubmission = async () =>
+        {
+            await ratingService.SubmitRating(invalidRating, id);
+        };
+
+        await throwingSubmission.Should().ThrowExactlyAsync<ArgumentOutOfRangeException>();
     }
 }
