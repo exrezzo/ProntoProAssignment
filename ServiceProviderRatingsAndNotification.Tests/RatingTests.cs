@@ -2,6 +2,7 @@ using FluentAssertions;
 using Moq;
 using ServiceProviderRatingsAndNotification.Rating;
 using ServiceProviderRatingsAndNotification.ServiceProvider;
+using ServiceProviderRatingsAndNotification.ServiceProviderNotification;
 
 namespace ServiceProviderRatingsAndNotification.Tests;
 
@@ -26,7 +27,7 @@ public class RatingTests
             .Setup(repository =>
                 repository.GetRatingsAsync(id))
             .ReturnsAsync(ratings);
-        var ratingService = new RatingService(serviceProviderRepoMock.Object);
+        var ratingService = new RatingService(serviceProviderRepoMock.Object, Mock.Of<IServiceProviderNotifier>());
         var averageRating = await ratingService.GetAverageRatingForServiceProvider(id);
         averageRating.Should().Be(expectedAverage);
     }
@@ -45,7 +46,7 @@ public class RatingTests
                 Id = id,
                 Name = "Cool Service Provider"
             });
-        var ratingService = new RatingService(serviceProviderRepoMock.Object);
+        var ratingService = new RatingService(serviceProviderRepoMock.Object, Mock.Of<IServiceProviderNotifier>());
         var throwingSubmission = async () =>
         {
             await ratingService.SubmitRating(invalidRating, id);

@@ -1,12 +1,16 @@
-﻿namespace ServiceProviderRatingsAndNotification.Rating;
+﻿using ServiceProviderRatingsAndNotification.ServiceProviderNotification;
+
+namespace ServiceProviderRatingsAndNotification.Rating;
 
 public class RatingService
 {
     private readonly IServiceProviderRepository _serviceProviderRepository;
+    private readonly IServiceProviderNotifier _serviceProviderNotifier;
 
-    public RatingService(IServiceProviderRepository serviceProviderRepository)
+    public RatingService(IServiceProviderRepository serviceProviderRepository, IServiceProviderNotifier serviceProviderNotifier)
     {
         _serviceProviderRepository = serviceProviderRepository;
+        _serviceProviderNotifier = serviceProviderNotifier;
     }
     /// <summary>
     /// Returns the average rating for a Service Provider, rounded with 2 decimal digit.
@@ -33,7 +37,7 @@ public class RatingService
             throw new ArgumentOutOfRangeException($"Cannot set rating {rating} because it's out of range 1-5.");
         await _serviceProviderExists(serviceProviderId);
         await _serviceProviderRepository.AddRatingAsync(serviceProviderId, rating);
-        // todo: raise a notification for just submitted rating
+        await _serviceProviderNotifier.NotifyRatingSubmittedAsync(serviceProviderId, rating);
     }
 
     private async Task _serviceProviderExists(Guid serviceProviderId)
