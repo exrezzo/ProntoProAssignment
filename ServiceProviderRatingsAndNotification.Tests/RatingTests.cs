@@ -54,4 +54,6 @@ public class RatingTests
 
         await throwingSubmission.Should().ThrowExactlyAsync<ArgumentOutOfRangeException>();
     }
+
+
 }
