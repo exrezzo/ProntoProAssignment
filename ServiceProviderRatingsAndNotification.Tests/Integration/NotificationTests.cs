@@ -12,7 +12,7 @@ namespace ServiceProviderRatingsAndNotification.Tests.Integration
     {
         /*
          * This test should be improved with a dedicated RabbitMQ container, because using a common one could
-         * return data, maybe in between could lie other submissions from other executions, making fail the test.
+         * return dirty data, maybe in between could lie other submissions from other executions, making fail the test.
          * Testcontainers package usage should be evaluated.
          */
         [Fact]
@@ -37,7 +37,7 @@ namespace ServiceProviderRatingsAndNotification.Tests.Integration
                 var guidStrFromMsg = submissionMsg.Split(' ')[0];
                 var guidFromMsg = Guid.Parse(guidStrFromMsg);
 
-                // we should get the same GUIDs for which a rating have been sumbitted
+                // we should get the same GUIDs for which a rating have been submitted
                 guidFromMsg.Should().Be(guid);
             }
         }
