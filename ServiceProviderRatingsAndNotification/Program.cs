@@ -9,14 +9,11 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+app.UseSwagger();
+app.UseSwaggerUI();
 
-app.UseHttpsRedirection();
+// this is removed for this assignment for the sake of simplicity, making this app runnable from docker container
+// app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
