@@ -5,10 +5,10 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
-COPY ["ServiceProviderRatingsAndNotification/ServiceProviderRatingsAndNotification.csproj", "ServiceProviderRatingsAndNotification/"]
-RUN dotnet restore "ServiceProviderRatingsAndNotification/ServiceProviderRatingsAndNotification.csproj"
+COPY ["ServiceProviderRatingsAndNotification.csproj", "./"]
+RUN dotnet restore "./ServiceProviderRatingsAndNotification.csproj"
 COPY . .
-WORKDIR "/src/ServiceProviderRatingsAndNotification"
+WORKDIR "/src/."
 RUN dotnet build "ServiceProviderRatingsAndNotification.csproj" -c Release -o /app/build
 
 FROM build AS publish
@@ -18,3 +18,4 @@ FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "ServiceProviderRatingsAndNotification.dll"]
+
