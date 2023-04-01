@@ -16,7 +16,7 @@ public class RatingService
     /// Returns the average rating for a Service Provider, rounded with 2 decimal digit.
     /// </summary>
     /// <param name="serviceProviderId"></param>
-    /// <returns></returns>
+    /// <returns>Two decimal digit precision average rating</returns>
     public async Task<double> GetAverageRatingForServiceProvider(Guid serviceProviderId)
     {
         await _serviceProviderExists(serviceProviderId);
