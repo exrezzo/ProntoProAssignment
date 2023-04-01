@@ -44,6 +44,11 @@ public class RatingService
     {
         var serviceProvider = await _serviceProviderRepository.GetAsync(serviceProviderId);
         if (serviceProvider is null)
-            throw new ArgumentException($"It does not exist any Service Provider with id {serviceProviderId}");
+            throw new ServiceProviderNotFoundException($"It does not exist any Service Provider with id {serviceProviderId}");
     }
+}
+
+public class ServiceProviderNotFoundException : Exception
+{
+    public ServiceProviderNotFoundException(string message) : base(message) { }
 }
