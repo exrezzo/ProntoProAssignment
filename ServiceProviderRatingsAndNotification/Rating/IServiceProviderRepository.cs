@@ -5,6 +5,7 @@ namespace ServiceProviderRatingsAndNotification.Rating;
 
 public interface IServiceProviderRepository
 {
+    Task<IEnumerable<ServiceProvider.ServiceProvider>> GetAllAsync();
     Task<ServiceProvider.ServiceProvider> GetAsync(Guid serviceProviderId);
     Task<IEnumerable<int>> GetRatingsAsync(Guid serviceProviderId);
     Task AddRatingAsync(Guid serviceProviderId, uint rating);
@@ -18,6 +19,14 @@ public class ServiceProviderRepository : IServiceProviderRepository
     {
         _connectionString = connectionString;
     }
+
+    public async Task<IEnumerable<ServiceProvider.ServiceProvider>> GetAllAsync()
+    {
+        await using var sqlConnection = new SqlConnection(_connectionString);
+        var serviceProvider = await sqlConnection.QueryAsync<ServiceProvider.ServiceProvider>("SELECT * FROM ServiceProvider");
+        return serviceProvider;
+    }
+
     public async Task<ServiceProvider.ServiceProvider> GetAsync(Guid serviceProviderId)
     {
         await using var sqlConnection = new SqlConnection(_connectionString);
