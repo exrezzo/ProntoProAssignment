@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using ServiceProviderRatingsAndNotification.Controllers.Dtos;
 using ServiceProviderRatingsAndNotification.Rating;
+using ServiceProviderRatingsAndNotification.ServiceProviderNotification;
 
 namespace ServiceProviderRatingsAndNotification.Controllers
 {
@@ -15,7 +16,8 @@ namespace ServiceProviderRatingsAndNotification.Controllers
         {
             _ratingService = ratingService;
         }
-        [HttpGet]
+
+        [HttpGet("average-rating")]
         public async Task<ActionResult<AverageRatingDto>> GetAverageRatingAsync([FromQuery] Guid serviceProviderId)
         {
             try
@@ -32,6 +34,21 @@ namespace ServiceProviderRatingsAndNotification.Controllers
                 return BadRequest(e.Message);
             }
         }
+
+        [HttpGet("submit-rating")]
+        public async Task<ActionResult> SubmitRatingAsync([FromQuery] Guid serviceProviderId, [FromQuery] uint rating)
+        {
+            try
+            {
+                await _ratingService.SubmitRating(rating, serviceProviderId);
+                return Ok();
+            }
+            catch (ArgumentOutOfRangeException e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
         [HttpGet("last-rating-submissions")]
         public ActionResult<IEnumerable<RatingSubmission>> GetLastNotificationsAsync([FromQuery] uint limit = 100)
         {

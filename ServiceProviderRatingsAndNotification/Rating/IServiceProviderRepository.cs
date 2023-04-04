@@ -32,8 +32,11 @@ public class ServiceProviderRepository : IServiceProviderRepository
         return ratings;
     }
 
-    public Task AddRatingAsync(Guid serviceProviderId, uint rating)
+    public async Task AddRatingAsync(Guid serviceProviderId, uint rating)
     {
-        throw new NotImplementedException();
+        await using var sqlConnection = new SqlConnection(_connectionString);
+        await sqlConnection.ExecuteAsync(
+            "INSERT INTO ServiceProviderRating(ServiceProviderId, Rating) VALUES (@serviceProviderId, @rating)",
+            new { serviceProviderId, rating = (int) rating });
     }
 }
