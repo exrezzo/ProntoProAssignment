@@ -32,5 +32,21 @@ namespace ServiceProviderRatingsAndNotification.Controllers
                 return BadRequest(e.Message);
             }
         }
+        [HttpGet("last-rating-submissions")]
+        public ActionResult<IEnumerable<RatingSubmission>> GetLastNotificationsAsync([FromQuery] uint limit = 100)
+        {
+            try
+            {
+                var submissions = _ratingService.GetLastRatingSubmissions(limit);
+                return Ok(submissions);
+            }
+            catch (InvalidRatingSubmissionMessageException e)
+            {
+                return new ObjectResult(e.Message)
+                {
+                    StatusCode = 500
+                };
+            }
+        }
     }
 }

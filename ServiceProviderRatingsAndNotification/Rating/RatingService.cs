@@ -1,4 +1,5 @@
-﻿using ServiceProviderRatingsAndNotification.ServiceProviderNotification;
+﻿using System.Text.RegularExpressions;
+using ServiceProviderRatingsAndNotification.ServiceProviderNotification;
 
 namespace ServiceProviderRatingsAndNotification.Rating;
 
@@ -40,15 +41,38 @@ public class RatingService
         await _serviceProviderNotifier.NotifyRatingSubmittedAsync(serviceProviderId, rating);
     }
 
+    public IEnumerable<RatingSubmission> GetLastRatingSubmissions(uint limit)
+    {
+        var lastSubmissionsMessages = _serviceProviderNotifier.GetLastRatingSubmissions(limit);
+        var submissions = lastSubmissionsMessages.Select(_parseRatingSubmissionMessage);
+        return submissions;
+    }
+
     private async Task _serviceProviderExists(Guid serviceProviderId)
     {
         var serviceProvider = await _serviceProviderRepository.GetAsync(serviceProviderId);
         if (serviceProvider is null)
             throw new ServiceProviderNotFoundException($"It does not exist any Service Provider with id {serviceProviderId}");
     }
+
+    private RatingSubmission _parseRatingSubmissionMessage(string msg)
+    {
+        var match = Regex.Match(msg, @"^(\b[0-9a-fA-F]{8}(?:-[0-9a-fA-F]{4}){3}-[0-9a-fA-F]{12}\b)\s+(\d+)$");
+        if (!match.Success) throw new InvalidRatingSubmissionMessageException($"\"{msg}\" is an invalid rating submission message");
+
+        var serviceProviderId = Guid.Parse(match.Groups[1].Value);
+        var rating = uint.Parse(match.Groups[2].Value);
+        var ratingSubmission = new RatingSubmission { ServiceProviderId = serviceProviderId, Rating = rating };
+        return ratingSubmission;
+    }
 }
 
 public class ServiceProviderNotFoundException : Exception
 {
     public ServiceProviderNotFoundException(string message) : base(message) { }
+}
+
+public class InvalidRatingSubmissionMessageException : Exception
+{
+    public InvalidRatingSubmissionMessageException(string message) : base(message) { }
 }
