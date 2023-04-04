@@ -7,7 +7,7 @@ public interface IServiceProviderRepository
 {
     Task<ServiceProvider.ServiceProvider> GetAsync(Guid serviceProviderId);
     Task<IEnumerable<int>> GetRatingsAsync(Guid serviceProviderId);
-    Task AddRatingAsync(Guid serviceProviderId, int rating);
+    Task AddRatingAsync(Guid serviceProviderId, uint rating);
 }
 
 public class ServiceProviderRepository : IServiceProviderRepository
@@ -32,7 +32,7 @@ public class ServiceProviderRepository : IServiceProviderRepository
         return ratings;
     }
 
-    public Task AddRatingAsync(Guid serviceProviderId, int rating)
+    public Task AddRatingAsync(Guid serviceProviderId, uint rating)
     {
         throw new NotImplementedException();
     }

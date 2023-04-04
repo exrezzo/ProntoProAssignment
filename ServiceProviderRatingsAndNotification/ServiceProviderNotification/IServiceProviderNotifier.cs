@@ -9,7 +9,7 @@ namespace ServiceProviderRatingsAndNotification.ServiceProviderNotification
 {
     public interface IServiceProviderNotifier
     {
-        Task NotifyRatingSubmittedAsync(Guid serviceProviderId, int  rating);
+        Task NotifyRatingSubmittedAsync(Guid serviceProviderId, uint rating);
         List<string> GetLastRatingSubmissions(uint limit);
     }
 
@@ -34,13 +34,14 @@ namespace ServiceProviderRatingsAndNotification.ServiceProviderNotification
             _channel = connection.CreateModel();
             _channel.QueueDeclare(_queueName, durable: true, autoDelete: false, exclusive:false);
         }
+
         /// <summary>
         /// Sends a message to the message broker
         /// </summary>
         /// <param name="serviceProviderId">The id of the Service Provider which received a new rating</param>
         /// <param name="rating">The rating between 1 and 5</param>
         /// <returns></returns>
-        public Task NotifyRatingSubmittedAsync(Guid serviceProviderId, int rating)
+        public Task NotifyRatingSubmittedAsync(Guid serviceProviderId, uint rating)
         {
             if (rating is < 1 or > 5)
                 throw new ArgumentOutOfRangeException($"Rating {rating} is not in range 1 to 5");

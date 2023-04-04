@@ -31,7 +31,7 @@ public class RatingService
     /// <param name="serviceProviderId"></param>
     /// <returns></returns>
     /// <exception cref="ArgumentOutOfRangeException"></exception>
-    public async Task SubmitRating(int rating, Guid serviceProviderId)
+    public async Task SubmitRating(uint rating, Guid serviceProviderId)
     {
         if (rating is < 1 or > 5)
             throw new ArgumentOutOfRangeException($"Cannot set rating {rating} because it's out of range 1-5.");
