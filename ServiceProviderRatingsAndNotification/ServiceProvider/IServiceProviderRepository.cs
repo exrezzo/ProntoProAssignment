@@ -1,12 +1,12 @@
 ﻿using System.Data.SqlClient;
 using Dapper;
 
-namespace ServiceProviderRatingsAndNotification.Rating;
+namespace ServiceProviderRatingsAndNotification.ServiceProvider;
 
 public interface IServiceProviderRepository
 {
-    Task<IEnumerable<ServiceProvider.ServiceProvider>> GetAllAsync();
-    Task<ServiceProvider.ServiceProvider> GetAsync(Guid serviceProviderId);
+    Task<IEnumerable<ServiceProvider>> GetAllAsync();
+    Task<ServiceProvider> GetAsync(Guid serviceProviderId);
     Task<IEnumerable<int>> GetRatingsAsync(Guid serviceProviderId);
     Task AddRatingAsync(Guid serviceProviderId, uint rating);
 }
@@ -20,17 +20,17 @@ public class ServiceProviderRepository : IServiceProviderRepository
         _connectionString = connectionString;
     }
 
-    public async Task<IEnumerable<ServiceProvider.ServiceProvider>> GetAllAsync()
+    public async Task<IEnumerable<ServiceProvider>> GetAllAsync()
     {
         await using var sqlConnection = new SqlConnection(_connectionString);
-        var serviceProvider = await sqlConnection.QueryAsync<ServiceProvider.ServiceProvider>("SELECT * FROM ServiceProvider");
+        var serviceProvider = await sqlConnection.QueryAsync<ServiceProvider>("SELECT * FROM ServiceProvider");
         return serviceProvider;
     }
 
-    public async Task<ServiceProvider.ServiceProvider> GetAsync(Guid serviceProviderId)
+    public async Task<ServiceProvider> GetAsync(Guid serviceProviderId)
     {
         await using var sqlConnection = new SqlConnection(_connectionString);
-        var serviceProvider = await sqlConnection.QuerySingleOrDefaultAsync<ServiceProvider.ServiceProvider>("SELECT * FROM ServiceProvider where Id = @serviceProviderId", new {serviceProviderId});
+        var serviceProvider = await sqlConnection.QuerySingleOrDefaultAsync<ServiceProvider>("SELECT * FROM ServiceProvider where Id = @serviceProviderId", new {serviceProviderId});
         return serviceProvider;
     }
 
