@@ -2,24 +2,25 @@
 using Microsoft.AspNetCore.Mvc;
 using ServiceProviderRatingsAndNotification.Controllers.Dtos;
 using ServiceProviderRatingsAndNotification.Rating;
+using ServiceProviderRatingsAndNotification.ServiceProvider;
 
 namespace ServiceProviderRatingsAndNotification.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class ServiceProviderController : ControllerBase
     {
-        private readonly IServiceProviderRepository _serviceProviderRepository;
+        private readonly ServiceProviderService _serviceProviderService;
 
-        public ServiceProviderController(IServiceProviderRepository serviceProviderRepository)
+        public ServiceProviderController(ServiceProviderService serviceProviderService)
         {
-            _serviceProviderRepository = serviceProviderRepository;
+            _serviceProviderService = serviceProviderService;
         }
 
         [HttpGet("get-all")]
         public async Task<ActionResult<IEnumerable<ServiceProviderDto>>> GetServiceProvidersAsync()
         {
-            var serviceProviders = await _serviceProviderRepository.GetAllAsync();
+            var serviceProviders = await _serviceProviderService.GetAllAsync();
             return Ok(serviceProviders.Select(sp => new ServiceProviderDto()
             {
                 Id = sp.Id,

@@ -11,7 +11,7 @@ builder.Services.AddTransient<IServiceProviderRepository>(_ =>
 );
 builder.Services.AddSingleton<IServiceProviderNotifier>(_ => new ServiceProviderNotifierWithRabbitMq("localhost"));
 builder.Services.AddTransient<RatingService>();
-// builder.Services.AddTransient<ServiceProviderService>();
+builder.Services.AddTransient<ServiceProviderService>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
