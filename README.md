@@ -70,6 +70,11 @@ REST Api
 
 Integration testing with `Testcontainers`
 ===
+Under `ServiceProviderRatingsAndNotification.Tests/Integration` resides all the integration testing related code.
+
+The `Fixture` folder contains what's needed to create the infrastructure the Core code depends on. This naming follows what's proposed by the `xUnit` library that have been used.
+
+Test classes for integration testing have been created as members of their respective "containers" classes, just for the purpose of employing the power of parallel tests execution thanks to Docker containers creation for each test. In this way tests are run way faster!
 
 ## Environment containerization
 In order to keep a consisted and replicable environment via **Docker** a `docker-compose.yml` file have been created.
