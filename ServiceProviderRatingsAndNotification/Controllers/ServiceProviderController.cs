@@ -6,6 +6,9 @@ using ServiceProviderRatingsAndNotification.ServiceProvider;
 
 namespace ServiceProviderRatingsAndNotification.Controllers
 {
+    /// <summary>
+    /// Service Providers operations
+    /// </summary>
     [Route("[controller]")]
     [ApiController]
     public class ServiceProviderController : ControllerBase
@@ -17,6 +20,10 @@ namespace ServiceProviderRatingsAndNotification.Controllers
             _serviceProviderService = serviceProviderService;
         }
 
+        /// <summary>
+        /// Gets all existing Service Providers
+        /// </summary>
+        /// <returns></returns>
         [HttpGet("get-all")]
         public async Task<ActionResult<IEnumerable<ServiceProviderDto>>> GetServiceProvidersAsync()
         {
