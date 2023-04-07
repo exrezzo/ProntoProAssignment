@@ -3,10 +3,26 @@ ___by Ivan Ardillo___
 ## Introduction
 This README gives an overview of the implementation choices made for this project, addressing their motivations and limitations.
 
+## Quick startup
+___Prerequisite___: `Docker Desktop` installed on local machine
+
+
+To start playing with the Web Api with the environment set up:
+- navigate to `ServiceProviderRatingsAndNotification/` web api project folder
+- run `docker-compose up --build`
+
+This will spin all needed containers, namely the mssql database, rabbitmq message broker and the web api.
+
+### Debugging with Visual Studio
+It is possible to run the Api from Visual Studio if created containers with docker-compose are running.
+
 ## Domain Services
 ...
 
 ## REST Api
+...
+
+## Unit and Integration testing
 ...
 
 ## Environment containerization
