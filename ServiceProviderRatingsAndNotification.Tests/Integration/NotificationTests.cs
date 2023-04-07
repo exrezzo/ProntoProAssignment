@@ -5,20 +5,23 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using FluentAssertions;
+using ServiceProviderRatingsAndNotification.Tests.Integration.Fixture;
 
 namespace ServiceProviderRatingsAndNotification.Tests.Integration
 {
-    public class NotificationTests
+    public class NotificationTests : IClassFixture<NotifierFixture>
     {
-        /*
-         * This test should be improved with a dedicated RabbitMQ container, because using a common one could
-         * return dirty data, maybe in between could lie other submissions from other executions, making fail the test.
-         * Testcontainers package usage should be evaluated.
-         */
+        private readonly NotifierFixture _notifierFixture;
+
+        public NotificationTests(NotifierFixture notifierFixture)
+        {
+            _notifierFixture = notifierFixture;
+        }
+        
         [Fact]
         public async Task Rating_Submissions_Are_Sent_And_Retrieved_From_RabbitMQ()
         {
-            var notifier = new ServiceProviderNotifierWithRabbitMq("localhost");
+            var notifier =_notifierFixture.ServiceProviderNotifier;
 
             // some GUIDs are generated to simulate new Service Providers that received a rating 
             var guids = Enumerable.Range(0, 10).Select(i => new Guid(i, 0, 0, new byte[8])).ToList();
@@ -29,7 +32,7 @@ namespace ServiceProviderRatingsAndNotification.Tests.Integration
 
             // we get them from RabbitMQ, but are reversed because we want to check if messages have been sent all correctly
             // regardless the timing when happened.
-            var lastRatingSubmissions = notifier.GetLastRatingSubmissions();
+            var lastRatingSubmissions = notifier.GetLastRatingSubmissions(100);
             lastRatingSubmissions.Reverse();
 
             foreach (var (submissionMsg, guid) in lastRatingSubmissions.Zip(guids))
