@@ -11,28 +11,27 @@ using Testcontainers.RabbitMq;
 
 namespace ServiceProviderRatingsAndNotification.Tests.Integration.Fixture
 {
-    public class RepositoriesFixture : IAsyncDisposable
+    public class RepositoriesFixture : IAsyncLifetime
     {
-        private readonly MsSqlContainer _container;
+        private MsSqlContainer _container;
 
-        public IServiceProviderRepository ServiceProviderRepository { get; }
+        public IServiceProviderRepository ServiceProviderRepository { get; private set; }
 
-        public RepositoriesFixture()
+        public async Task InitializeAsync()
         {
             _container = new MsSqlBuilder().Build();
-            _container.StartAsync().Wait();
+            await _container.StartAsync();
             var connectionString = _container.GetConnectionString();
-            var execScriptAsync = _container.ExecScriptAsync(File.ReadAllText("Integration/Fixture/init-db.sql")).Result;
+            var execScriptAsync = await _container.ExecScriptAsync(File.ReadAllText("Integration/Fixture/init-db.sql"));
 
             ServiceProviderRepository = new ServiceProviderRepository(connectionString);
-
-            
         }
 
-        public async ValueTask DisposeAsync()
+        async Task IAsyncLifetime.DisposeAsync()
         {
             await _container.StopAsync();
             await _container.DisposeAsync();
         }
+
     }
 }

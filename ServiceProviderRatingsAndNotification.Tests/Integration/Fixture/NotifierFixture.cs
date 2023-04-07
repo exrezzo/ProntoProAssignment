@@ -8,24 +8,25 @@ using Testcontainers.RabbitMq;
 
 namespace ServiceProviderRatingsAndNotification.Tests.Integration.Fixture
 {
-    public class NotifierFixture : IAsyncDisposable
+    public class NotifierFixture : IAsyncLifetime
     {
-        private readonly RabbitMqContainer _rabbitMqContainer;
+        private RabbitMqContainer _rabbitMqContainer;
         public IServiceProviderNotifier ServiceProviderNotifier { get; private set; }
 
-        public NotifierFixture()
+        public async Task InitializeAsync()
         {
             _rabbitMqContainer = new RabbitMqBuilder()
                 .WithUsername("guest")
                 .WithPassword("guest")
                 .Build();
 
-            _rabbitMqContainer.StartAsync().Wait();
+            await _rabbitMqContainer.StartAsync();
             ServiceProviderNotifier = new ServiceProviderNotifierWithRabbitMq(
                 _rabbitMqContainer.Hostname,
                 _rabbitMqContainer.GetMappedPublicPort(5672));
         }
-        public async ValueTask DisposeAsync()
+
+        async Task IAsyncLifetime.DisposeAsync()
         {
             await _rabbitMqContainer.StopAsync();
             await _rabbitMqContainer.DisposeAsync();
