@@ -26,4 +26,4 @@ services:
       - rabbitmq
       - db
     environment:
-      - ConnectionStrings__Default=Server=db;Database=myapi;User Id=sa;Password=SuperPass92!
+      - ConnectionStrings__Default=Server=db;Database=spratingsdb;User Id=sa;Password=SuperPass92!

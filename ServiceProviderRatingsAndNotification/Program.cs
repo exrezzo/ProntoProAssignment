@@ -9,9 +9,10 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddTransient<IServiceProviderRepository>(_ => 
 // in real word application this should come from appsettings.json, but there the only purpose is to run locally.
-    new ServiceProviderRepository("Server=localhost;Database=spratingsdb;User Id=sa;Password=SuperPass92!")
+    new ServiceProviderRepository(builder.Configuration["ConnectionStrings:MsSql"])
 );
-builder.Services.AddSingleton<IServiceProviderNotifier>(_ => new ServiceProviderNotifierWithRabbitMq("localhost"));
+builder.Services.AddSingleton<IServiceProviderNotifier>(_ => 
+    new ServiceProviderNotifierWithRabbitMq(builder.Configuration["RabbitMqHostName"]));
 builder.Services.AddTransient<RatingService>();
 builder.Services.AddTransient<ServiceProviderService>();
 
