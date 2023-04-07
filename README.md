@@ -62,11 +62,15 @@ Contains:
 Contains:
 - `IServiceProviderNotifier` with its only implementation `ServiceProviderNotifierWithRabbitMq`
 
-This service manages the notification phase when dealing with rating submissions.
+> The `ServiceProviderNotifierWithRabbitMq` service manages the notification phase when dealing with rating submissions.
+This service provides notification with RabbitMQ.
+However, some considerations have to be done, considering the toy context that this projects tries to address.
+The "message consumption" part of this service denatures the goal of RabbitMQ a bit.
+Using a queue in this way assumes that there's only a single user that acknowledges all queued messages through a REST
+endpoint, moreover there could be scalability issues if the number of submissions grows high, like it would in a real world application.
+For example, a queue per user could be considered, but this is out of the scope of this project, willing to demonstrate a basic usage of
+a message broker like RabbitMQ.
 
-
-REST Api
-===
 
 Integration testing with `Testcontainers`
 ===
