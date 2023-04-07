@@ -27,9 +27,9 @@ namespace ServiceProviderRatingsAndNotification.ServiceProviderNotification
         private readonly IModel _channel;
         private const string _queueName = "submittedRatings";
 
-        public ServiceProviderNotifierWithRabbitMq(string hostName)
+        public ServiceProviderNotifierWithRabbitMq(string hostName, ushort port = 5672)
         {
-            var factory = new ConnectionFactory() { HostName = hostName};
+            var factory = new ConnectionFactory() { HostName = hostName, Port = port};
             var connection = factory.CreateConnection();
             _channel = connection.CreateModel();
             _channel.QueueDeclare(_queueName, durable: true, autoDelete: false, exclusive:false);
