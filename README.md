@@ -1,29 +1,75 @@
-# Service Provider Ratings and Notifications Assignment
-___by Ivan Ardillo___ 
-## Introduction
+Service Provider Ratings and Notifications Assignment
+===
 This README gives an overview of the implementation choices made for this project, addressing their motivations and limitations.
 
-## Quick startup
-___Prerequisite___: `Docker Desktop` installed on local machine
+_Optional tasks achieved:_
+- Include OpenAPI (previously known as the Swagger) for rating
+service, which outlines the available endpoints and their functionality.
+- Integration, or benchmark tests. Using Testcontainers is a plus.
+
+
+
+Quick startup
+===
+___Prerequisite___: `Docker Desktop` installed on local machine (tested on Windows machine only)
 
 
 To start playing with the Web Api with the environment set up:
 - navigate to `ServiceProviderRatingsAndNotification/` web api project folder
 - run `docker-compose up --build`
 
-This will spin all needed containers, namely the mssql database, rabbitmq message broker and the web api.
+This will spin all needed containers, namely the MSSQL database, RabbitMQ message broker and the web api.
 
-### Debugging with Visual Studio
-It is possible to run the Api from Visual Studio if created containers with docker-compose are running.
+Navigate at http://localhost:5000/swagger/index.html to reach out the **Swagger UI** and interact with the Api.
 
-## Domain Services
-...
+> ### Debugging with Visual Studio
+> It is possible to run the Api from Visual Studio if created containers with docker-compose are running, given that RabbitMQ and the MsSql db listen of default ports.
 
-## REST Api
-...
+Project structure choices
+===
+In order to keep this project as simple as possible a simple project structure has been kept.
+In fact, all different layers of the application reside into the main web project. In a real world scenario a separation with a _Clean Architecture_/_Onion_ style would be preferred, with a Core project having the business logic and entities and no dependencies other than the SDK and utils. The principle of "depending on abstractions, not implementations" is followed, meaning that interfaces are declared internally into the Core project but implemented and injected from the outside with the _Dependency Injection_ pattern. 
 
-## Unit and Integration testing
-...
+This would be followed by for example an _Infrastructure_ layer that depends on the Core layer and implements I/O and data sources access by implementing interfaces provided by the Core layer.
+
+In this project these principles are followed but without formally specifying the explained solution structure, it's done within the Web Api project with folders.
+
+_Repository_ design pattern has been adopted in order to abstract away the data access layer for better decoupling and testability.
+
+Domain Services
+===
+
+Under the `ServiceProviderRatingsAndNotification` project there are 2 folders (among the others) related to the two main business services:
+- ServiceProvider
+- Rating
+
+Those folders contain main operations needed to solve the required tasks.
+
+### `ServiceProvider` folder
+Contains:
+- `IServiceProviderRepository` with its only implementation `ServiceProviderRepository`
+- `ServiceProviderService` that runs business logic and depends on the repository 
+- `ServiceProvider` which is the entity representing a Service Provider
+
+This service it's pretty simple because for this project manages the entities retrieval only, much of the workload is implemented in the Rating service
+
+### `RatingService` folder
+Contains:
+- `RatingService` that depends on `IServiceProviderRepository` and `IServiceProviderNotifier`
+- `RatingSubmission` that represents a rating submitted for a given Service Provider
+
+### `ServiceProviderNotification` folder
+Contains:
+- `IServiceProviderNotifier` with its only implementation `ServiceProviderNotifierWithRabbitMq`
+
+This service manages the notification phase when dealing with rating submissions.
+
+
+REST Api
+===
+
+Integration testing with `Testcontainers`
+===
 
 ## Environment containerization
 In order to keep a consisted and replicable environment via **Docker** a `docker-compose.yml` file have been created.
