@@ -1,11 +1,10 @@
 using FluentAssertions;
 using Moq;
-using RabbitMQ.Client;
 using ServiceProviderRatingsAndNotification.Rating;
 using ServiceProviderRatingsAndNotification.ServiceProvider;
 using ServiceProviderRatingsAndNotification.ServiceProviderNotification;
 
-namespace ServiceProviderRatingsAndNotification.Tests;
+namespace ServiceProviderRatingsAndNotification.Tests.Unit;
 
 public class RatingTests
 {
